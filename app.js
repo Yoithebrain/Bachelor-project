@@ -43,8 +43,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Express Session Middleware
 app.use(session({
     secret: 'secret',
-    resave: true,
-    saveUninitialized: true,
+    resave: false, // don't reset the session
+    saveUninitialized: false, // Don't create session for every user, only when logged in
 }));
 
 // Passport Middleware
@@ -53,12 +53,8 @@ app.use(passport.session());
 
 //Global Express Messages Middleware/Variables
 app.use(require('connect-flash')());
-
-app.use((req, res, next) => {
-    res.locals.success_msg = req.flash('success_msg');
-    res.locals.error_msg = req.flash('error_msg');
-    res.locals.error = req.flash('error');
-   // res.locals.messages= require('express-messages')(req, res);
+app.use(function(req, res, next) {
+    res.locals.messages= require('express-messages')(req, res);
     next();
 });
 

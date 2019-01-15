@@ -136,6 +136,7 @@ router.post('/Test', (req, res) =>{
         from: ' "Nodemailer test" <kettebovaskeri@gmail.com>', // sender address (who sends)
         to: 'caspercpl@gmail.com', // list of receivers (who receives)
         subject: 'You suck dude!', // Subject line
+        text: req.body.message,
         html: output,// html body
     };
 
@@ -146,7 +147,7 @@ router.post('/Test', (req, res) =>{
         }
 
         console.log('Message sent: ' + info.response);
-        res.render('nodemailer', {msg:'Email has been sent'});
+        res.render('nodemailer', {msg:'Email has been sent.'});
 
         console.log(mailOptions.to)
     });

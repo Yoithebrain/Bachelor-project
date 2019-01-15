@@ -32,14 +32,15 @@ router.get('/booking', ensureAuthenticated, (req, res) => res.render('booking', 
     title: 'Booking Page'
 }));
 
+//Reservation Page
+router.get('/ReserveScreen', ensureAuthenticated, (req, res) => res.render('ReserveScreen', {
+    title: 'Reservation Page'
+}));
+
 
 // Register Proccess
 router.post('/register', (req, res) => {
-    const name = req.body.name;
-    const email = req.body.email;
-    const username = req.body.username;
-    const password = req.body.password;
-    const password2 = req.body.password2;
+    const { name, email, username, password, password2} = req.body;
     let errors = [];
 
     //Check required fields
@@ -83,10 +84,10 @@ router.post('/register', (req, res) => {
                 }
                 else {
                     let newUser = new User({
-                        name: name,
-                        email: email,
-                        username: username,
-                        password: password
+                        name,
+                        email,
+                        username,
+                        password
                     });
                     bcrypt.genSalt(10, (err, salt) => {
                         bcrypt.hash(newUser.password, salt, (err, hash) => {
@@ -99,7 +100,7 @@ router.post('/register', (req, res) => {
                                     req.flash('success_msg', 'You are now registered and can log in');
                                     res.redirect('/users/login')
                                 })
-                                .catch(err => console.log(err));
+                                .catch(err => console.log(err));                                
                         });
                     })
                 }
@@ -112,7 +113,7 @@ router.post('/login', (req, res, next) => {
     passport.authenticate('local', {
         successRedirect: '/users/profile',
         failureRedirect: '/users/login',
-        failureFlash: true
+        failureFlash: 'Invalid username or password.'
     })(req, res, next);
 });
 
@@ -127,8 +128,7 @@ router.post('/editPassword', function (req, res, next) {
     var _uID = req.user._id;
     let errors = [];
 
-    //console.log(req.user.password);
-    //console.log(User.password);
+    
     //Check required fields
     if (!old_Password || !new_Password || !new_Password2) {
         errors.push({ msg: 'Please fill in all fields' });
@@ -154,12 +154,12 @@ router.post('/editPassword', function (req, res, next) {
     }
 
     //Match old password with bcrypt salted password
-    bcrypt.compare(old_Password, req.user.password, function (err, isMatch) {
+    bcrypt.compare(old_Password, req.user.password, (err, isMatch) => {
         if (err) {
             console.log("Errors")
         };
         if (isMatch) {
-            console.log(bcrypt.hash(new_Password, bcrypt.getSalt(req.user.password), function (err, hash) {
+            console.log(bcrypt.hash(new_Password, bcrypt.getSalt(req.user.password), (err, hash) => {
                 if (err) {
                     //console.log(err)
                 }
@@ -167,7 +167,7 @@ router.post('/editPassword', function (req, res, next) {
                 console.log(hash);
                 //var myCollection = User.collection("User");
                 //myCollection.updateOne({_id: _uID}, {$set:{password: n_password}}, function(err, res){
-                User.findByIdAndUpdate(_uID, { password: hash }, { new: true }, function (err, res) {
+                User.findByIdAndUpdate(_uID, { password: hash }, { new: true }, (err, res) => {
                     if (err) {
 
                     }
@@ -183,19 +183,6 @@ router.post('/editPassword', function (req, res, next) {
         name: req.user.name 
     });
 });
-
-//Profile page
-router.get('/profile', ensureAuthenticated, function(req, res){
-    //  console.log(req.user.username);
-    //m_name = User.name;
-    res.render('profile', 
-    {
-    name: req.user.name,
-    reservation: req.user.username
-    }
-    );
-    
-})
 
 //Logout
 router.get('/logout', (req, res) => {
