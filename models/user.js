@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const UserSchema = mongoose.Schema({
     name:{
         type: String,
-        required:'full name can´t be empty',
+        required:true,
     },
     email:{
         type: String,

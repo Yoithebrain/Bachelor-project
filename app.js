@@ -76,19 +76,19 @@ app.use(expressValidator({
     }
 }));
 
-
-app.get('*', function(req, res, next){
+//Makes user accessible to all calls
+app.get('*', (req, res, next) => {
     res.locals.user = req.user || null;
     next();
 });
 
-app.get('*', function(req, res, next){
+app.get('*', (req, res, next) => {
     res.locals.bestyrelse = req.bestyrelse || null;
     next();
 });
 
 //Home Route
-app.get('/', function(req, res){
+app.get('/', (req, res) => {
     News.find({}, (err, news) =>{
         if(err){
             console.log(err);
@@ -114,14 +114,14 @@ app.use('/bestyrelse', bestyrelse);
 app.use('/nodemailer', nodemailer);
 
 // Catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use((req, res, next) => {
     var err = new Error('Not Found');
     err.status = 404;
     next(err);
   });
   
   // Error handler
-  app.use(function(err, req, res, next) {
+  app.use((err, req, res, next) => {
     // Set locals, only providing error in development
     res.locals.message = err.message;
     res.locals.error = req.app.get('env') === 'development' ? err : {};

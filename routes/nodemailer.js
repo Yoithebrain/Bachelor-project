@@ -4,9 +4,9 @@ var nodemailer = require('nodemailer');
 const bodyParser = require('body-parser');
 
 // email test
-router.get('/nodemailer', function (req, res) {
-    res.render('nodemailer');
-});
+router.get('/nodemailer', (req, res) => res.render('nodemailer',{
+    title: 'Mail'
+}));
 
 
 //submit form
@@ -30,10 +30,6 @@ router.post('/send', (req, res) => {
 
     //Create PDF with pdfkit
     //doc = new PDFDocument({compress:false});
-
-
-
-
 
     // Create the transporter with the required configuration for Outlook
     var transporter = nodemailer.createTransport({
@@ -61,8 +57,6 @@ router.post('/send', (req, res) => {
                 return "caspercpl@gmail.com"
         }
     };
-
-
     // setup e-mail data, even with unicode symbols
     var mailOptions = {
         from: 'kettebovaskeri@gmail.com', // sender address (who sends)
@@ -72,7 +66,7 @@ router.post('/send', (req, res) => {
     };
 
     // send mail with defined transport object
-    transporter.sendMail(mailOptions, function (error, info) {
+    transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
             return console.log(error);
         }
@@ -141,7 +135,7 @@ router.post('/Test', (req, res) =>{
     };
 
     // send mail with defined transport object
-    transporter.sendMail(mailOptions, function (error, info) {
+    transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
             return console.log(error);
         }
