@@ -8,7 +8,7 @@ let News = require('../models/news');
 let User = require('../models/user');
 
 
-router.get('/news', function (req, res) {
+router.get('/news', (req, res) => {
     News.find({}, (err, news) => {
         if (err) {
             console.log(err);
@@ -21,20 +21,20 @@ router.get('/news', function (req, res) {
     });
 });
 //Add route
-router.get('/add', function (req, res) {
+router.get('/add', ensureAuthenticated, (req, res) => {
     res.render('add_news', {
         title: 'Add News'
     })
 })
 
-router.get('/singleNews', function (req, res) {
+router.get('/singleNews', (req, res) => {
     res.render('singleNews', {
         title: 'singleNews '
     })
 })
 
 //Add submit POST route
-router.post('/add', function(req, res){
+router.post('/add', ensureAuthenticated, (req, res) => {
     //Rules express-validatior
     req.checkBody('title', 'Title is required').notEmpty();
     //req.checkBody('author', 'Author is required').notEmpty();
@@ -54,7 +54,7 @@ router.post('/add', function(req, res){
         news.author = req.user._id;
         news.body = req.body.body;
 
-        news.save(function(err){
+        news.save((err) => {
             if(err){
                 console.log(err);
                 return;
@@ -67,8 +67,8 @@ router.post('/add', function(req, res){
 })
 
 //Load edit form
-router.get('/edit/:id', ensureAuthenticated, function(req, res){
-    News.findById(req.params.id, function(err, news){
+router.get('/edit/:id', ensureAuthenticated, (req, res) => {
+    News.findById(req.params.id, (err, news) => {
         if(news.author != req.user._id){
             res.redirect('/')
             console.log("Not Authorized")
@@ -81,7 +81,7 @@ router.get('/edit/:id', ensureAuthenticated, function(req, res){
 });
 
 //Update Submit POST Route
-router.post('edit/:id', function(req,res){
+router.post('edit/:id', ensureAuthenticated, (req,res) => {
     let news= {};
     news.title = req.body.title;
     news.author = req.body.author;
@@ -89,7 +89,7 @@ router.post('edit/:id', function(req,res){
 
     let query = { _id: req.params.id }
 
-    News.update(query, news, function (err) {
+    News.update(query, news, (err) => {
         if (err) {
             console.log(err);
             return;
@@ -101,17 +101,17 @@ router.post('edit/:id', function(req,res){
 });
 
 //Delete news
-router.delete('/:id', function (req, res) {
+router.delete('/:id', ensureAuthenticated, (req, res) => {
     if (!req.user._id) {
         res.status(500).send();
     }
     let query = { _id: req.params.id }
 
-    News.findById(req.param.id, function (err, news) {
+    News.findById(req.param.id, (err, news) => {
         if (news.author != req.user._id) {
             res.status(500).send();
         } else {
-            News.remove(query, function (err) {
+            News.remove(query,  (err) => {
                 if (err) {
                     console.log(err)
                 }
@@ -124,11 +124,11 @@ router.delete('/:id', function (req, res) {
 
 //Get single news
 router.get('/:id', function (req, res) {
-    News.findById(req.params.id, function (err, news) {
+    News.findById(req.params.id, (err, news) => {
         if (err) {
             throw (err)
         };
-        User.findById(news.author, function (err, user) {
+        User.findById(news.author, (err, user) => {
             res.render('singleNews', {
                 news: news,
                 author: user.name

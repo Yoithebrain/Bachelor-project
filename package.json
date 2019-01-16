@@ -4,7 +4,8 @@
   "description": "Warhammer 40k Artikel hjemmeside",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon app"
+    "start": "nodemon app",
+    "test": "mocha"
   },
   "author": "Casper Larsen",
   "license": "ISC",
@@ -23,5 +24,9 @@
     "nodemailer": "^4.7.0",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^5.2.0"
   }
 }
